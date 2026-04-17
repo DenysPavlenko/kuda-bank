@@ -1,5 +1,5 @@
+import { useTheme } from "@/src/context";
 import { ThemeProvider } from "@/src/context/ThemeContext";
-import { useTheme } from "@/src/hooks";
 import {
   Inter_400Regular,
   Inter_500Medium,
