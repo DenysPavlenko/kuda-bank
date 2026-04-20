@@ -21,7 +21,7 @@ export function Avatar({ name, size = 64 }: AvatarProps) {
   );
 
   return (
-    <View style={styles.circle}>
+    <View style={styles.circle} testID="avatar">
       <Typography variant="bodySmall" color="systemPrimary">
         {name.charAt(0).toUpperCase()}
       </Typography>
