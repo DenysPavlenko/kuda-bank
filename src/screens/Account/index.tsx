@@ -25,7 +25,7 @@ export const AccountScreen = () => {
     if (loading) {
       return (
         <View style={styles.loading}>
-          <ActivityIndicator />
+          <ActivityIndicator testID="account-spinner" />
         </View>
       );
     }
