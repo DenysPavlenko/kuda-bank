@@ -16,6 +16,7 @@ type AppState = {
   setOnboardingSeen: () => Promise<void>;
   signUp: (payload: SignupPayload) => Promise<void>;
   signOut: () => Promise<void>;
+  signOutToOnboarding: () => Promise<void>;
   isLoading: boolean;
 };
 
@@ -59,6 +60,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setIsAuth(false);
   }, []);
 
+  // For testing purposes only
+  const signOutToOnboarding = useCallback(async () => {
+    await userService.clearOnboarding();
+    setIsOnboarded(false);
+    await signOut();
+  }, [signOut]);
+
   const value = useMemo(
     () => ({
       isOnboarded,
@@ -66,9 +74,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
       signUp,
       signOut,
       setOnboardingSeen,
+      signOutToOnboarding,
       isLoading,
     }),
-    [isAuth, signUp, isOnboarded, signOut, setOnboardingSeen, isLoading],
+    [
+      isAuth,
+      signUp,
+      isOnboarded,
+      signOut,
+      setOnboardingSeen,
+      signOutToOnboarding,
+      isLoading,
+    ],
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

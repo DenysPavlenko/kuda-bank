@@ -1,4 +1,8 @@
-import type { SignupPayload, SignupResponse } from "@/src/types/api";
+import type {
+  AccountResponse,
+  SignupPayload,
+  SignupResponse,
+} from "@/src/types";
 import axios, { type InternalAxiosRequestConfig } from "axios";
 import { authService } from "./authService";
 
@@ -17,5 +21,10 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 
 export async function signup(payload: SignupPayload) {
   const res = await api.post<SignupResponse>("/signup", payload);
+  return res.data;
+}
+
+export async function fetchAccount() {
+  const res = await api.get<AccountResponse>("/interview/account");
   return res.data;
 }

@@ -72,6 +72,9 @@ const AppContent = () => {
             <Stack.Protected guard={isOnboarded && !isAuth}>
               <Stack.Screen name="(auth)" />
             </Stack.Protected>
+            <Stack.Protected guard={isOnboarded && isAuth}>
+              <Stack.Screen name="(app)" />
+            </Stack.Protected>
           </Stack>
         </NavigationThemeProvider>
       </SafeAreaProvider>
