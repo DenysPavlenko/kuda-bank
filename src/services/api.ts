@@ -28,3 +28,9 @@ export async function fetchAccount() {
   const res = await api.get<AccountResponse>("/interview/account");
   return res.data;
 }
+
+// Response Interceptor could be added here to handle token refresh
+// api.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {},
+// );
