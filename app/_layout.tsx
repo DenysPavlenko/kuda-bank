@@ -1,4 +1,4 @@
-import { useTheme } from "@/src/context";
+import { AppProvider, useAppContext, useTheme } from "@/src/context";
 import { ThemeProvider } from "@/src/context/ThemeContext";
 import {
   Inter_400Regular,
@@ -26,7 +26,8 @@ SplashScreen.setOptions({
 SplashScreen.preventAutoHideAsync();
 
 const AppContent = () => {
-  const { theme, isLoading } = useTheme();
+  const { theme, isLoading: isThemeLoading } = useTheme();
+  const { isLoading, isOnboarded } = useAppContext();
 
   let [fontsLoaded] = useFonts({
     Inter_400Regular,
@@ -35,7 +36,7 @@ const AppContent = () => {
     Inter_700Bold,
   });
 
-  const loaded = fontsLoaded && !isLoading;
+  const loaded = fontsLoaded && !isThemeLoading && !isLoading;
 
   const navigationTheme: Theme = useMemo(
     () => ({
@@ -64,9 +65,11 @@ const AppContent = () => {
       <StatusBar style={theme.statusBar} />
       <SafeAreaProvider>
         <NavigationThemeProvider value={navigationTheme}>
-          <ThemeProvider>
-            <Stack screenOptions={{ headerShown: false }} />
-          </ThemeProvider>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Protected guard={!isOnboarded}>
+              <Stack.Screen name="(onboarding)" />
+            </Stack.Protected>
+          </Stack>
         </NavigationThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
@@ -75,8 +78,10 @@ const AppContent = () => {
 
 export default function RootLayout() {
   return (
-    <ThemeProvider>
-      <AppContent />
-    </ThemeProvider>
+    <AppProvider>
+      <ThemeProvider>
+        <AppContent />
+      </ThemeProvider>
+    </AppProvider>
   );
 }
