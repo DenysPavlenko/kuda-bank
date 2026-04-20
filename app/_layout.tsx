@@ -27,7 +27,7 @@ SplashScreen.preventAutoHideAsync();
 
 const AppContent = () => {
   const { theme, isLoading: isThemeLoading } = useTheme();
-  const { isLoading, isOnboarded } = useAppContext();
+  const { isAuth, isLoading, isOnboarded } = useAppContext();
 
   let [fontsLoaded] = useFonts({
     Inter_400Regular,
@@ -68,6 +68,9 @@ const AppContent = () => {
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Protected guard={!isOnboarded}>
               <Stack.Screen name="(onboarding)" />
+            </Stack.Protected>
+            <Stack.Protected guard={isOnboarded && !isAuth}>
+              <Stack.Screen name="(auth)" />
             </Stack.Protected>
           </Stack>
         </NavigationThemeProvider>
