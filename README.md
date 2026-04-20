@@ -1,50 +1,41 @@
-# Welcome to your Expo app 👋
+# KudaBank — React Native Test Assignment
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
-
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Getting started
 
 ```bash
-npm run reset-project
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Scan the QR code with Expo Go on Android or iOS.
 
-## Learn more
+## Architecture notes
 
-To learn more about developing your project with Expo, look at the following resources:
+### API layer (`src/services/api.ts`)
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+A thin Axios instance centralises auth and response handling. All API functions are plain async functions — no library dependency.
 
-## Join the community
+The `BASE_URL` is hardcoded for simplicity. In a real app it would come from an environment variable (`EXPO_PUBLIC_API_URL`).
 
-Join our community of developers creating universal apps.
+A request interceptor automatically attaches the `Authorization: Basic <token>` header from the in-memory credentials cache. A response interceptor stub is left in place — in a production app it would catch 401 responses, attempt a token refresh, and retry the original request before propagating the error.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### Form logic (`src/screens/Signup/hooks/useSignupForm.ts`)
+
+Form state, validation, and submission live in a custom hook, keeping the screen component focused on rendering. In real world app React hook form or similar lib should be used to simplify the logic and provide real time ui updates on user input (e.g. hiding validation errors on input)
+
+### Testing
+
+Tests are written with **Jest** + **React Native Testing Library** using the `jest-expo` preset.
+
+The coverage is intentionally selective — the goal is to demonstrate the testing approach rather than achieve 100% coverage.
+
+**Approach:**
+
+- Business logic (hooks, services) is tested in isolation via unit tests
+- `useTheme` is mocked globally in `jest.setup.ts` to avoid async noise from `ThemeProvider`
+- A shared `renderWithProviders` utility in `src/utils/test-utils.tsx` wraps components with necessary providers (`SafeAreaProvider`, `ThemeProvider`)
+- Screen-level tests mock at the service boundary so they act as real integration tests of the hook → UI wiring
+
+### State management
+
+Minimal global state via React Context (`AppContext`) — tracks authentication and onboarding status, initialised on app start from `authService` and `userService` respectively. No external state library was added as the scope doesn't warrant it.
