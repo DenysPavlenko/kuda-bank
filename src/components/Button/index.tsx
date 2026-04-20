@@ -53,7 +53,10 @@ export function Button({
       {...rest}
     >
       {loading ? (
-        <ActivityIndicator color={theme.colors[contentsMap[variant]]} />
+        <ActivityIndicator
+          color={theme.colors[contentsMap[variant]]}
+          testID="button-spinner"
+        />
       ) : (
         <Typography variant="buttonText" color={contentsMap[variant]}>
           {label}
